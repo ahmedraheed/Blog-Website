@@ -1,0 +1,44 @@
+@model IEnumerable<BlogApp.Models.Post>
+
+@{
+    ViewData["Title"] = "Blog Posts";
+}
+
+<h1>Blog Posts</h1>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New Post</a>
+    </p>
+}
+
+<div class="row">
+    @foreach (var item in Model) {
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        @Html.DisplayFor(modelItem => item.Title)
+                        @if (!item.IsApproved)
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                    </h2>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        By @(item.Author?.UserName ?? "Unknown") on @item.CreatedAt.ToShortDateString()
+                    </h6>
+                    <p class="card-text">
+                        @(item.Content.Length > 200 ? item.Content.Substring(0, 200) + "..." : item.Content)
+                    </p>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Read More</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
