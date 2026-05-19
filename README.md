@@ -37,6 +37,8 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - **Pending Posts** section with one-click approval
 - Recent posts management with quick edit/delete actions
 
+![Admin Dashboard](screenshots/admin_dashboard.png)
+
 ---
 
 ## 🚀 Getting Started
