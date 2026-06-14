@@ -54,6 +54,7 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - **Category Statistics Chart**: Interactive Line Chart powered by **Chart.js**
 - **Pending Posts** section with one-click approval
 - Recent posts management with quick edit/delete actions
+- **Global Theme Settings**: Instantly change the primary color scheme across the entire website for all users
 
 ![Admin Dashboard](screenshots/admin_dashboard.png)
 
@@ -113,7 +114,8 @@ BlogApp/
 │   ├── ApplicationDbContext.cs  # EF Core DbContext
 │   └── SeedData.cs              # Role & admin user seeding
 ├── Services/
-│   └── RAGService.cs            # Gemini API integration & embedding search
+│   ├── RAGService.cs            # Gemini API integration & embedding search
+│   └── ThemeService.cs          # Global theme color management
 ├── Hubs/
 │   └── ChatHub.cs               # SignalR WebSockets hub
 ├── Models/
@@ -123,7 +125,9 @@ BlogApp/
 │   ├── ChatMessage.cs           # Chat history model
 │   └── ErrorViewModel.cs        # Error handling model
 ├── Views/
-│   ├── Admin/Index.cshtml       # Admin dashboard view
+│   ├── Admin/                   # Admin dashboard views
+│   │   ├── Index.cshtml
+│   │   └── ThemeSettings.cshtml
 │   ├── Chat/                    # Chat interface views
 │   │   ├── Index.cshtml
 │   │   └── AdminIndex.cshtml

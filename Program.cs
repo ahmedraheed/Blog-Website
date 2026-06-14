@@ -18,6 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddHttpClient<BlogApp.Services.RAGService>();
 builder.Services.AddScoped<BlogApp.Services.RAGService>();
+builder.Services.AddSingleton<BlogApp.Services.ThemeService>();
 
 var app = builder.Build();
 

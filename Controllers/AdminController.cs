@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using BlogApp.Data;
 using Microsoft.AspNetCore.Identity;
+using BlogApp.Services;
 
 namespace BlogApp.Controllers
 {
@@ -13,11 +14,13 @@ namespace BlogApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ThemeService _themeService;
 
-        public AdminController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public AdminController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ThemeService themeService)
         {
             _context = context;
             _userManager = userManager;
+            _themeService = themeService;
         }
 
         public async Task<IActionResult> Index()
@@ -47,6 +50,21 @@ namespace BlogApp.Controllers
                 .ToListAsync();
 
             return View(recentPosts);
+        }
+
+        [HttpGet]
+        public IActionResult ThemeSettings()
+        {
+            ViewBag.CurrentColor = _themeService.GetPrimaryColor();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ThemeSettings(string primaryColor)
+        {
+            _themeService.SetPrimaryColor(primaryColor);
+            TempData["SuccessMessage"] = "Global theme updated successfully!";
+            return RedirectToAction(nameof(ThemeSettings));
         }
     }
 }

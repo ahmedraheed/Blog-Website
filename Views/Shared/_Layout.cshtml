@@ -1,3 +1,4 @@
+@inject BlogApp.Services.ThemeService ThemeService
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BlogApp.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary: @ThemeService.GetPrimaryColor() !important;
+            --primary-hover: @ThemeService.GetPrimaryColor() !important;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -33,6 +40,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">
                                     ⚙️ Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="ThemeSettings">
+                                    🎨 Theme
                                 </a>
                             </li>
                         }
