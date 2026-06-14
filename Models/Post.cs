@@ -23,6 +23,10 @@ namespace BlogApp.Models
         [Required]
         public string AuthorId { get; set; } = string.Empty;
         
+        public int? CategoryId { get; set; }
+        
+        public Category? Category { get; set; }
+
         public IdentityUser? Author { get; set; }
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();

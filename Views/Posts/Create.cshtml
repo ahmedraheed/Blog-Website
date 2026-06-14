@@ -21,6 +21,11 @@
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
                         <label asp-for="Content" class="form-label">Content</label>
                         <textarea asp-for="Content" class="form-control" rows="12" placeholder="Write your post content here..."></textarea>
                         <span asp-validation-for="Content" class="text-danger"></span>

@@ -24,7 +24,7 @@ namespace BlogApp.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var query = _context.Posts.Include(p => p.Author).AsQueryable();
+            var query = _context.Posts.Include(p => p.Author).Include(p => p.Category).AsQueryable();
             if (!User.IsInRole("Admin"))
             {
                 query = query.Where(p => p.IsApproved);
@@ -40,6 +40,7 @@ namespace BlogApp.Controllers
 
             var post = await _context.Posts
                 .Include(p => p.Author)
+                .Include(p => p.Category)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -53,6 +54,7 @@ namespace BlogApp.Controllers
         [Authorize]
         public IActionResult Create()
         {
+            ViewBag.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -60,10 +62,11 @@ namespace BlogApp.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Content")] Post post)
+        public async Task<IActionResult> Create([Bind("Title,Content,CategoryId")] Post post)
         {
             ModelState.Remove("AuthorId");
             ModelState.Remove("Author");
+            ModelState.Remove("Category");
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -77,6 +80,7 @@ namespace BlogApp.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+            ViewBag.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
 
@@ -89,6 +93,7 @@ namespace BlogApp.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post == null) return NotFound();
             
+            ViewBag.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
 
@@ -96,12 +101,13 @@ namespace BlogApp.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,CategoryId")] Post post)
         {
             if (id != post.Id) return NotFound();
 
             ModelState.Remove("AuthorId");
             ModelState.Remove("Author");
+            ModelState.Remove("Category");
             if (ModelState.IsValid)
             {
                 try
@@ -111,6 +117,7 @@ namespace BlogApp.Controllers
 
                     existingPost.Title = post.Title;
                     existingPost.Content = post.Content;
+                    existingPost.CategoryId = post.CategoryId;
                     _context.Update(existingPost);
                     await _context.SaveChangesAsync();
                 }
@@ -121,6 +128,7 @@ namespace BlogApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
 

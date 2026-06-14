@@ -22,6 +22,11 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - Rich post listing with author info and timestamps
 - Post preview with "Read More" navigation
 
+### 🏷️ Categories
+- Organize posts into predefined categories (e.g., Technology, Lifestyle, Programming)
+- Category selection available during post creation and editing
+- Elegant category badges displayed on the post feed
+
 ### ✅ Post Approval Workflow
 - Posts created by regular users are marked as **Pending**
 - Admin reviews and **approves** posts before they appear on the public feed
@@ -39,6 +44,7 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 
 ### 📊 Admin Dashboard
 - Overview stats: total posts, comments, and users
+- **Category Statistics Chart**: Interactive Line Chart powered by **Chart.js**
 - **Pending Posts** section with one-click approval
 - Recent posts management with quick edit/delete actions
 
@@ -102,6 +108,7 @@ BlogApp/
 │   └── ChatHub.cs               # SignalR WebSockets hub
 ├── Models/
 │   ├── Post.cs                  # Blog post model
+│   ├── Category.cs              # Category model
 │   ├── Comment.cs               # Comment model
 │   ├── ChatMessage.cs           # Chat history model
 │   └── ErrorViewModel.cs        # Error handling model
@@ -132,6 +139,7 @@ BlogApp/
 | Entity Framework Core | ORM & database management |
 | ASP.NET Core Identity | Authentication & authorization |
 | SignalR | Real-time WebSockets communication |
+| Chart.js | Interactive charts & data visualization |
 | SQLite | Lightweight database |
 | Bootstrap 5 | Responsive UI styling |
 | jQuery | Client-side interactivity |

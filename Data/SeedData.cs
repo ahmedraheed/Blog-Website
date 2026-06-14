@@ -41,6 +41,19 @@ namespace BlogApp.Data
                     await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
             }
+
+            // Seed Categories
+            var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            if (!await dbContext.Categories.AnyAsync())
+            {
+                dbContext.Categories.AddRange(
+                    new BlogApp.Models.Category { Name = "Technology" },
+                    new BlogApp.Models.Category { Name = "Lifestyle" },
+                    new BlogApp.Models.Category { Name = "Programming" },
+                    new BlogApp.Models.Category { Name = "News" }
+                );
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

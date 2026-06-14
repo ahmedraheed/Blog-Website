@@ -42,6 +42,7 @@
                         </h2>
                     </div>
                     <p class="card-subtitle mb-3">
+                        <span class="badge bg-secondary me-2">@(item.Category?.Name ?? "Uncategorized")</span>
                         👤 @(item.Author?.UserName ?? "Unknown") &nbsp;·&nbsp; 📅 @item.CreatedAt.ToString("MMM dd, yyyy")
                     </p>
                     <p class="card-text">

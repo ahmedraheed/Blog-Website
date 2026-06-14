@@ -12,6 +12,7 @@ public class ApplicationDbContext : IdentityDbContext
     }
 
     public DbSet<Post> Posts { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
     public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
 }

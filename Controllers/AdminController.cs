@@ -26,6 +26,13 @@ namespace BlogApp.Controllers
             ViewBag.TotalComments = await _context.Comments.CountAsync();
             ViewBag.TotalUsers = await _userManager.Users.CountAsync();
 
+            var categoryStats = await _context.Categories
+                .Select(c => new { Name = c.Name, Count = c.Posts.Count })
+                .ToListAsync();
+            
+            ViewBag.CategoryLabels = System.Text.Json.JsonSerializer.Serialize(categoryStats.Select(c => c.Name));
+            ViewBag.CategoryData = System.Text.Json.JsonSerializer.Serialize(categoryStats.Select(c => c.Count));
+
             var pendingPosts = await _context.Posts
                 .Include(p => p.Author)
                 .Where(p => !p.IsApproved)
