@@ -32,6 +32,11 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - Authenticated users can leave comments on any published post
 - Comments display the author name and timestamp
 
+### 🤖 Real-Time Chat Bot & Notifications
+- Instant two-way messaging between **Admin** and **Users** powered by **SignalR**
+- Dedicated Chat Management dashboard for Admin
+- Global **Toast Notifications** alert users immediately when they receive a message on any page
+
 ### 📊 Admin Dashboard
 - Overview stats: total posts, comments, and users
 - **Pending Posts** section with one-click approval
@@ -88,16 +93,23 @@ BlogApp/
 │   ├── HomeController.cs        # Home page (redirects to Blog)
 │   ├── PostsController.cs       # CRUD for blog posts + approval
 │   ├── CommentsController.cs    # Comment creation
-│   └── AdminController.cs       # Admin dashboard
+│   ├── AdminController.cs       # Admin dashboard
+│   └── ChatController.cs        # Real-time chat views
 ├── Data/
 │   ├── ApplicationDbContext.cs  # EF Core DbContext
 │   └── SeedData.cs              # Role & admin user seeding
+├── Hubs/
+│   └── ChatHub.cs               # SignalR WebSockets hub
 ├── Models/
 │   ├── Post.cs                  # Blog post model
 │   ├── Comment.cs               # Comment model
+│   ├── ChatMessage.cs           # Chat history model
 │   └── ErrorViewModel.cs        # Error handling model
 ├── Views/
 │   ├── Admin/Index.cshtml       # Admin dashboard view
+│   ├── Chat/                    # Chat interface views
+│   │   ├── Index.cshtml
+│   │   └── AdminIndex.cshtml
 │   ├── Posts/                   # Post CRUD views
 │   │   ├── Index.cshtml
 │   │   ├── Details.cshtml
@@ -105,7 +117,7 @@ BlogApp/
 │   │   ├── Edit.cshtml
 │   │   └── Delete.cshtml
 │   └── Shared/
-│       └── _Layout.cshtml       # Main layout with navigation
+│       └── _Layout.cshtml       # Main layout with navigation and Global Notifications
 ├── Program.cs                   # App configuration & startup
 └── appsettings.json             # Configuration settings
 ```
@@ -119,6 +131,7 @@ BlogApp/
 | ASP.NET Core 8 MVC | Web framework |
 | Entity Framework Core | ORM & database management |
 | ASP.NET Core Identity | Authentication & authorization |
+| SignalR | Real-time WebSockets communication |
 | SQLite | Lightweight database |
 | Bootstrap 5 | Responsive UI styling |
 | jQuery | Client-side interactivity |
@@ -134,6 +147,7 @@ BlogApp/
 | Create posts | ❌ | ✅ (pending) | ✅ (auto-approved) |
 | Edit / Delete posts | ❌ | ❌ | ✅ |
 | Add comments | ❌ | ✅ | ✅ |
+| Send Chat Messages | ❌ | ✅ | ✅ |
 | Approve posts | ❌ | ❌ | ✅ |
 | Access dashboard | ❌ | ❌ | ✅ |
 
