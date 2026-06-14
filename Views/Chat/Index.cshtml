@@ -1,0 +1,110 @@
+@model IEnumerable<BlogApp.Models.ChatMessage>
+
+@{
+    ViewData["Title"] = "Chat with Admin";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex align-items-center p-3">
+                    <h5 class="mb-0 fw-bold">Chat with Admin</h5>
+                </div>
+                <div class="card-body bg-light" id="chatWindow" style="height: 400px; overflow-y: auto;">
+                    @foreach (var msg in Model)
+                    {
+                        if (msg.SenderId == ViewBag.CurrentUserId)
+                        {
+                            <div class="d-flex justify-content-end mb-3">
+                                <div class="bg-primary text-white p-2 rounded-3 shadow-sm" style="max-width: 75%;">
+                                    <div>@msg.Content</div>
+                                    <small class="text-white-50" style="font-size: 0.75rem;">@msg.Timestamp.ToLocalTime().ToString("g")</small>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-start mb-3">
+                                <div class="bg-white text-dark p-2 rounded-3 shadow-sm border" style="max-width: 75%;">
+                                    <div class="fw-bold small text-muted mb-1">Admin</div>
+                                    <div>@msg.Content</div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">@msg.Timestamp.ToLocalTime().ToString("g")</small>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="card-footer bg-white border-top-0 p-3">
+                    <form id="chatForm" class="d-flex">
+                        <input type="hidden" id="receiverId" value="@ViewBag.AdminId" />
+                        <input type="text" id="messageInput" class="form-control me-2" placeholder="Type a message..." required autocomplete="off" />
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        const currentUserId = '@ViewBag.CurrentUserId';
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        connection.on("ReceiveMessage", function (senderId, message) {
+            const chatWindow = document.getElementById("chatWindow");
+            const isMine = senderId === currentUserId;
+            
+            const wrapper = document.createElement("div");
+            wrapper.className = isMine ? "d-flex justify-content-end mb-3" : "d-flex justify-content-start mb-3";
+            
+            const msgDiv = document.createElement("div");
+            msgDiv.className = isMine ? "bg-primary text-white p-2 rounded-3 shadow-sm" : "bg-white text-dark p-2 rounded-3 shadow-sm border";
+            msgDiv.style.maxWidth = "75%";
+            
+            if (!isMine) {
+                const authorDiv = document.createElement("div");
+                authorDiv.className = "fw-bold small text-muted mb-1";
+                authorDiv.innerText = "Admin";
+                msgDiv.appendChild(authorDiv);
+            }
+            
+            const contentDiv = document.createElement("div");
+            contentDiv.innerText = message;
+            msgDiv.appendChild(contentDiv);
+            
+            const timeDiv = document.createElement("small");
+            timeDiv.className = isMine ? "text-white-50" : "text-muted";
+            timeDiv.style.fontSize = "0.75rem";
+            timeDiv.innerText = new Date().toLocaleString();
+            msgDiv.appendChild(timeDiv);
+            
+            wrapper.appendChild(msgDiv);
+            chatWindow.appendChild(wrapper);
+            
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        });
+
+        connection.start().then(function () {
+            document.getElementById("chatWindow").scrollTop = document.getElementById("chatWindow").scrollHeight;
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        document.getElementById("chatForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const receiverId = document.getElementById("receiverId").value;
+            const message = document.getElementById("messageInput").value;
+            if(!message) return;
+            
+            connection.invoke("SendMessage", receiverId, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            document.getElementById("messageInput").value = "";
+        });
+    </script>
+}

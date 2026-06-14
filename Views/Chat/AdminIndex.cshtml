@@ -1,0 +1,171 @@
+@model IEnumerable<BlogApp.Models.ChatMessage>
+@using Microsoft.AspNetCore.Identity
+
+@{
+    ViewData["Title"] = "Admin Chat Dashboard";
+    var users = ViewBag.Users as List<IdentityUser>;
+    var activeUserId = ViewBag.ActiveUserId as string;
+}
+
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">Chat Management</h3>
+    <div class="row">
+        <!-- Users List Sidebar -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
+                    <h6 class="fw-bold text-muted text-uppercase">Users</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
+                        @if (users != null)
+                        {
+                            foreach (var user in users)
+                            {
+                                var isActive = user.Id == activeUserId ? "bg-light border-start border-primary border-4" : "";
+                                <a href="@Url.Action("AdminIndex", new { userId = user.Id })" class="list-group-item list-group-item-action py-3 @isActive">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            @user.UserName?.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">@user.UserName</h6>
+                                            <small class="text-muted">@user.Email</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="col-md-8">
+            @if (string.IsNullOrEmpty(activeUserId))
+            {
+                <div class="card shadow-sm border-0 h-100 d-flex align-items-center justify-content-center bg-light" style="min-height: 500px;">
+                    <div class="text-center text-muted">
+                        <i class="bi bi-chat-square-text" style="font-size: 3rem;"></i>
+                        <p class="mt-2">Select a user from the sidebar to start chatting</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-primary text-white p-3">
+                        @{
+                            var activeUser = users?.FirstOrDefault(u => u.Id == activeUserId);
+                        }
+                        <h6 class="mb-0 fw-bold">Chatting with @activeUser?.UserName</h6>
+                    </div>
+                    <div class="card-body bg-light" id="chatWindow" style="height: 400px; overflow-y: auto;">
+                        @foreach (var msg in Model)
+                        {
+                            if (msg.SenderId == ViewBag.CurrentUserId)
+                            {
+                                <div class="d-flex justify-content-end mb-3">
+                                    <div class="bg-primary text-white p-2 rounded-3 shadow-sm" style="max-width: 75%;">
+                                        <div>@msg.Content</div>
+                                        <small class="text-white-50" style="font-size: 0.75rem;">@msg.Timestamp.ToLocalTime().ToString("g")</small>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex justify-content-start mb-3">
+                                    <div class="bg-white text-dark p-2 rounded-3 shadow-sm border" style="max-width: 75%;">
+                                        <div class="fw-bold small text-muted mb-1">@msg.Sender?.UserName</div>
+                                        <div>@msg.Content</div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">@msg.Timestamp.ToLocalTime().ToString("g")</small>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="card-footer bg-white p-3">
+                        <form id="chatForm" class="d-flex">
+                            <input type="hidden" id="receiverId" value="@activeUserId" />
+                            <input type="text" id="messageInput" class="form-control me-2" placeholder="Type a reply..." required autocomplete="off" />
+                            <button type="submit" class="btn btn-primary">Reply</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(activeUserId))
+{
+    @section Scripts {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+        <script>
+            const currentUserId = '@ViewBag.CurrentUserId';
+            const activeUserId = '@activeUserId';
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .build();
+
+            connection.on("ReceiveMessage", function (senderId, message) {
+                // If message is from someone else, only show if it's the active chat
+                if (senderId !== currentUserId && senderId !== activeUserId) {
+                    // Optional: show a notification for other chats
+                    return;
+                }
+
+                const chatWindow = document.getElementById("chatWindow");
+                const isMine = senderId === currentUserId;
+                
+                const wrapper = document.createElement("div");
+                wrapper.className = isMine ? "d-flex justify-content-end mb-3" : "d-flex justify-content-start mb-3";
+                
+                const msgDiv = document.createElement("div");
+                msgDiv.className = isMine ? "bg-primary text-white p-2 rounded-3 shadow-sm" : "bg-white text-dark p-2 rounded-3 shadow-sm border";
+                msgDiv.style.maxWidth = "75%";
+                
+                if (!isMine) {
+                    const authorDiv = document.createElement("div");
+                    authorDiv.className = "fw-bold small text-muted mb-1";
+                    authorDiv.innerText = "User"; // In a real app we'd fetch the name
+                    msgDiv.appendChild(authorDiv);
+                }
+                
+                const contentDiv = document.createElement("div");
+                contentDiv.innerText = message;
+                msgDiv.appendChild(contentDiv);
+                
+                const timeDiv = document.createElement("small");
+                timeDiv.className = isMine ? "text-white-50" : "text-muted";
+                timeDiv.style.fontSize = "0.75rem";
+                timeDiv.innerText = new Date().toLocaleString();
+                msgDiv.appendChild(timeDiv);
+                
+                wrapper.appendChild(msgDiv);
+                chatWindow.appendChild(wrapper);
+                
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
+
+            connection.start().then(function () {
+                document.getElementById("chatWindow").scrollTop = document.getElementById("chatWindow").scrollHeight;
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            document.getElementById("chatForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                const receiverId = document.getElementById("receiverId").value;
+                const message = document.getElementById("messageInput").value;
+                if(!message) return;
+                
+                connection.invoke("SendMessage", receiverId, message).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                document.getElementById("messageInput").value = "";
+            });
+        </script>
+    }
+}

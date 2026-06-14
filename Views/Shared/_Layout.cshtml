@@ -36,6 +36,14 @@
                                 </a>
                             </li>
                         }
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Chat" asp-action="Index">
+                                    💬 Chat
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -58,6 +66,43 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+          <div id="globalChatToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-white">
+              <strong class="me-auto">New Chat Message</strong>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              <p class="mb-2">You have received a new message.</p>
+              <a href="/Chat/Index" class="btn btn-sm btn-outline-primary">Open Chat</a>
+            </div>
+          </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+        <script>
+            // Only initialize the global connection if we are NOT on the Chat page.
+            // (The Chat page has its own connection logic to append messages to the UI).
+            if (window.location.pathname.toLowerCase().indexOf('/chat') === -1) {
+                const globalConnection = new signalR.HubConnectionBuilder()
+                    .withUrl("/chatHub")
+                    .build();
+
+                globalConnection.on("ReceiveMessage", function (senderId, message) {
+                    const toastEl = document.getElementById('globalChatToast');
+                    const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 5000 });
+                    toast.show();
+                });
+
+                globalConnection.start().catch(function (err) {
+                    console.error(err.toString());
+                });
+            }
+        </script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
