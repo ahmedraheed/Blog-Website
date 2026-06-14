@@ -42,6 +42,13 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - Dedicated Chat Management dashboard for Admin
 - Global **Toast Notifications** alert users immediately when they receive a message on any page
 
+### 🧠 AI Knowledge Assistant (RAG)
+- Floating AI assistant widget available on all pages
+- Uses the **Google Gemini API** for Retrieval-Augmented Generation (RAG)
+- **Conversational Memory**: Remembers previous questions within the chat session
+- Semantically searches blog posts to accurately answer user questions
+- Automatically provides direct links and categories for referenced blog posts
+
 ### 📊 Admin Dashboard
 - Overview stats: total posts, comments, and users
 - **Category Statistics Chart**: Interactive Line Chart powered by **Chart.js**
@@ -100,10 +107,13 @@ BlogApp/
 │   ├── PostsController.cs       # CRUD for blog posts + approval
 │   ├── CommentsController.cs    # Comment creation
 │   ├── AdminController.cs       # Admin dashboard
-│   └── ChatController.cs        # Real-time chat views
+│   ├── ChatController.cs        # Real-time chat views
+│   └── BotController.cs         # AI RAG Chatbot endpoints
 ├── Data/
 │   ├── ApplicationDbContext.cs  # EF Core DbContext
 │   └── SeedData.cs              # Role & admin user seeding
+├── Services/
+│   └── RAGService.cs            # Gemini API integration & embedding search
 ├── Hubs/
 │   └── ChatHub.cs               # SignalR WebSockets hub
 ├── Models/
@@ -139,6 +149,7 @@ BlogApp/
 | Entity Framework Core | ORM & database management |
 | ASP.NET Core Identity | Authentication & authorization |
 | SignalR | Real-time WebSockets communication |
+| Google Gemini API | AI Embeddings and Conversational RAG |
 | Chart.js | Interactive charts & data visualization |
 | SQLite | Lightweight database |
 | Bootstrap 5 | Responsive UI styling |

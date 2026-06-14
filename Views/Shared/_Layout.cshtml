@@ -51,13 +51,16 @@
         </nav>
     </header>
 
-    <div class="container mt-4">
+    <div class="container pb-5">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer">
+    <!-- AI Chatbot Widget -->
+    <partial name="_AIChatWidget" />
+
+    <footer class="border-top footer text-muted mt-auto">
         <div class="container">
             &copy; @DateTime.Now.Year BlogApp — Built with ASP.NET Core
         </div>

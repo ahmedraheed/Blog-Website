@@ -16,6 +16,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddHttpClient<BlogApp.Services.RAGService>();
+builder.Services.AddScoped<BlogApp.Services.RAGService>();
 
 var app = builder.Build();
 
