@@ -59,7 +59,15 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - Recent posts management with quick edit/delete actions
 - **Global Theme Settings**: Instantly change the primary color scheme across the entire website for all users
 
-![Admin Dashboard](screenshots/admin_dashboard.png)
+### 🖼️ Admin Interface Showcase
+
+<p align="center">
+  <img src="screenshots/admin_1.png" width="48%" style="margin-bottom: 10px;" />
+  <img src="screenshots/admin_2.png" width="48%" style="margin-bottom: 10px;" />
+  <img src="screenshots/admin_3.png" width="48%" style="margin-bottom: 10px;" />
+  <img src="screenshots/admin_4.png" width="48%" style="margin-bottom: 10px;" />
+  <img src="screenshots/admin_5.png" width="48%" style="margin-bottom: 10px;" />
+</p>
 
 ---
 
