@@ -55,45 +55,81 @@
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h4 class="mb-3">⏳ Pending Approval</h4>
-        @if(ViewBag.PendingPosts != null && ((IEnumerable<BlogApp.Models.Post>)ViewBag.PendingPosts).Any())
-        {
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var item in (IEnumerable<BlogApp.Models.Post>)ViewBag.PendingPosts)
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="mb-3">⏳ Pending Approval</h4>
+                @if(ViewBag.PendingPosts != null && ((IEnumerable<BlogApp.Models.Post>)ViewBag.PendingPosts).Any())
+                {
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in (IEnumerable<BlogApp.Models.Post>)ViewBag.PendingPosts)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@item.Title</td>
+                                    <td class="text-muted">@item.Author?.UserName</td>
+                                    <td class="text-muted">@item.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <form asp-controller="Posts" asp-action="Approve" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-success">✅ Approve</button>
+                                            </form>
+                                            <a asp-controller="Posts" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                            <a asp-controller="Posts" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">🎉 No pending posts — all caught up!</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-white pb-0 border-0">
+                <h4 class="mb-0">🟢 Online Users</h4>
+            </div>
+            <div class="card-body">
+                @if(ViewBag.OnlineUsers != null)
+                {
+                    var onlineList = (IEnumerable<dynamic>)ViewBag.OnlineUsers;
+                    if(onlineList.Any())
                     {
-                        <tr>
-                            <td class="fw-semibold">@item.Title</td>
-                            <td class="text-muted">@item.Author?.UserName</td>
-                            <td class="text-muted">@item.CreatedAt.ToString("MMM dd, yyyy")</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <form asp-controller="Posts" asp-action="Approve" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-sm btn-success">✅ Approve</button>
-                                    </form>
-                                    <a asp-controller="Posts" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">View</a>
-                                    <a asp-controller="Posts" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
+                        <ul class="list-group list-group-flush">
+                            @foreach(var user in onlineList)
+                            {
+                                <li class="list-group-item px-0 d-flex align-items-center">
+                                    <span class="badge bg-success rounded-circle p-1 me-2" style="width:10px; height:10px;"> </span>
+                                    <div>
+                                        <div class="fw-bold">@user.UserName</div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
                     }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p class="text-muted mb-0">🎉 No pending posts — all caught up!</p>
-        }
+                    else
+                    {
+                        <p class="text-muted mb-0">No users online.</p>
+                    }
+                }
+            </div>
+        </div>
     </div>
 </div>
 

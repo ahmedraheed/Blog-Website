@@ -53,6 +53,7 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 - Overview stats: total posts, comments, and users
 - **Category Statistics Chart**: Interactive Line Chart powered by **Chart.js**
 - **Post Impressions Chart**: Line Chart tracking "Read More" clicks for the top posts
+- **Live Online Users**: Real-time tracking of currently active users via SignalR
 - **Pending Posts** section with one-click approval
 - Recent posts management with quick edit/delete actions
 - **Global Theme Settings**: Instantly change the primary color scheme across the entire website for all users
@@ -115,6 +116,7 @@ BlogApp/
 │   ├── ApplicationDbContext.cs  # EF Core DbContext
 │   └── SeedData.cs              # Role & admin user seeding
 ├── Services/
+│   ├── OnlineUserService.cs     # Real-time online user tracking
 │   ├── RAGService.cs            # Gemini API integration & embedding search
 │   └── ThemeService.cs          # Global theme color management
 ├── Hubs/

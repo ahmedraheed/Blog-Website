@@ -19,6 +19,7 @@ builder.Services.AddSignalR();
 builder.Services.AddHttpClient<BlogApp.Services.RAGService>();
 builder.Services.AddScoped<BlogApp.Services.RAGService>();
 builder.Services.AddSingleton<BlogApp.Services.ThemeService>();
+builder.Services.AddSingleton<BlogApp.Services.OnlineUserService>();
 
 var app = builder.Build();
 

@@ -11,10 +11,32 @@ namespace BlogApp.Hubs;
 public class ChatHub : Hub
 {
     private readonly ApplicationDbContext _context;
+    private readonly BlogApp.Services.OnlineUserService _onlineUserService;
 
-    public ChatHub(ApplicationDbContext context)
+    public ChatHub(ApplicationDbContext context, BlogApp.Services.OnlineUserService onlineUserService)
     {
         _context = context;
+        _onlineUserService = onlineUserService;
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        var userId = Context.UserIdentifier;
+        if (userId != null)
+        {
+            _onlineUserService.UserConnected(userId);
+        }
+        await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var userId = Context.UserIdentifier;
+        if (userId != null)
+        {
+            _onlineUserService.UserDisconnected(userId);
+        }
+        await base.OnDisconnectedAsync(exception);
     }
 
     public async Task SendMessage(string receiverId, string message)

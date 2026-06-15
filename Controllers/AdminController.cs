@@ -15,12 +15,14 @@ namespace BlogApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ThemeService _themeService;
+        private readonly OnlineUserService _onlineUserService;
 
-        public AdminController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ThemeService themeService)
+        public AdminController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ThemeService themeService, OnlineUserService onlineUserService)
         {
             _context = context;
             _userManager = userManager;
             _themeService = themeService;
+            _onlineUserService = onlineUserService;
         }
 
         public async Task<IActionResult> Index()
@@ -45,6 +47,13 @@ namespace BlogApp.Controllers
 
             ViewBag.ImpressionLabels = System.Text.Json.JsonSerializer.Serialize(topPosts.Select(p => p.Title));
             ViewBag.ImpressionData = System.Text.Json.JsonSerializer.Serialize(topPosts.Select(p => p.Reads));
+
+            var onlineUserIds = _onlineUserService.GetOnlineUsers();
+            var onlineUsers = await _userManager.Users
+                .Where(u => onlineUserIds.Contains(u.Id))
+                .Select(u => new { UserName = u.UserName, Email = u.Email })
+                .ToListAsync();
+            ViewBag.OnlineUsers = onlineUsers;
 
             var pendingPosts = await _context.Posts
                 .Include(p => p.Author)
