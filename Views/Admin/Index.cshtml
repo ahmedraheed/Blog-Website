@@ -36,10 +36,22 @@
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h4 class="mb-3">📈 Category Statistics</h4>
-        <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="mb-3">📈 Category Statistics</h4>
+                <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="mb-3">👁️ Post Impressions (Read Count)</h4>
+                <canvas id="impressionChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -159,19 +171,35 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+            // Impression Chart
+            var impCtx = document.getElementById('impressionChart').getContext('2d');
+            var impLabels = @Html.Raw(ViewBag.ImpressionLabels);
+            var impData = @Html.Raw(ViewBag.ImpressionData);
+
+            new Chart(impCtx, {
+                type: 'line',
+                data: {
+                    labels: impLabels,
+                    datasets: [{
+                        label: 'Reads',
+                        data: impData,
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
         });

@@ -52,6 +52,7 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 ### 📊 Admin Dashboard
 - Overview stats: total posts, comments, and users
 - **Category Statistics Chart**: Interactive Line Chart powered by **Chart.js**
+- **Post Impressions Chart**: Line Chart tracking "Read More" clicks for the top posts
 - **Pending Posts** section with one-click approval
 - Recent posts management with quick edit/delete actions
 - **Global Theme Settings**: Instantly change the primary color scheme across the entire website for all users

@@ -36,6 +36,16 @@ namespace BlogApp.Controllers
             ViewBag.CategoryLabels = System.Text.Json.JsonSerializer.Serialize(categoryStats.Select(c => c.Name));
             ViewBag.CategoryData = System.Text.Json.JsonSerializer.Serialize(categoryStats.Select(c => c.Count));
 
+            var topPosts = await _context.Posts
+                .Where(p => p.IsApproved)
+                .OrderByDescending(p => p.ReadCount)
+                .Take(10)
+                .Select(p => new { Title = p.Title, Reads = p.ReadCount })
+                .ToListAsync();
+
+            ViewBag.ImpressionLabels = System.Text.Json.JsonSerializer.Serialize(topPosts.Select(p => p.Title));
+            ViewBag.ImpressionData = System.Text.Json.JsonSerializer.Serialize(topPosts.Select(p => p.Reads));
+
             var pendingPosts = await _context.Posts
                 .Include(p => p.Author)
                 .Where(p => !p.IsApproved)

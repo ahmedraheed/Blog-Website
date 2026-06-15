@@ -47,6 +47,11 @@ namespace BlogApp.Controllers
             
             if (post == null) return NotFound();
 
+            // Increment Read Count
+            post.ReadCount++;
+            _context.Update(post);
+            await _context.SaveChangesAsync();
+
             return View(post);
         }
 

@@ -20,6 +20,8 @@ namespace BlogApp.Models
 
         public bool IsApproved { get; set; } = false;
 
+        public int ReadCount { get; set; } = 0;
+
         [Required]
         public string AuthorId { get; set; } = string.Empty;
         
