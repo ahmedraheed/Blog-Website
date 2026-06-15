@@ -19,6 +19,7 @@ A full-featured blog platform built with **ASP.NET Core 8 MVC**, featuring user 
 ### 📄 Blog Posts
 - **Create** posts (available to all authenticated users)
 - **Edit** and **Delete** posts (Admin only)
+- **Featured Posts**: Admins can pin selected posts to the top of the feed
 - Rich post listing with author info and timestamps
 - Post preview with "Read More" navigation
 

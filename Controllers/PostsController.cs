@@ -29,7 +29,7 @@ namespace BlogApp.Controllers
             {
                 query = query.Where(p => p.IsApproved);
             }
-            var posts = await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
+            var posts = await query.OrderByDescending(p => p.IsFeatured).ThenByDescending(p => p.CreatedAt).ToListAsync();
             return View(posts);
         }
 
@@ -181,6 +181,22 @@ namespace BlogApp.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Posts/ToggleFeature/5
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleFeature(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post != null)
+            {
+                post.IsFeatured = !post.IsFeatured;
+                _context.Update(post);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Admin");
         }
 
         private bool PostExists(int id)
